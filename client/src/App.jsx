@@ -6,6 +6,7 @@ import { FaArrowUp } from 'react-icons/fa'
 import Nav from './components/Nav.jsx';
 import BloodTypes from './components/BloodTypes.jsx';
 import Footer from './components/Footer.jsx'
+import GenerateText from './components/GenerateText.jsx';
 
 function App() {
   const [array, setArray] = useState([])
@@ -98,6 +99,7 @@ function App() {
         </section>
 
         <BloodTypes bloodTypes={array} />
+        <GenerateText /> {/* Add the GenerateText component here */}
 
         <Footer currentYear={currentYear} handleScrollTo={handleScrollTo} />
       </main>
