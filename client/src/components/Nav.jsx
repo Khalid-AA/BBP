@@ -3,81 +3,53 @@ import PropTypes from 'prop-types';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
 const Nav = ({ nav, handleNav, handleScrollTo, navRef }) => {
-  const [activeItem, setActiveItem] = useState('home');
+  const [activeItem] = useState('home');
 
   const handleNavClick = (section) => {
-    setActiveItem(section);
     handleScrollTo(section);
   };
   return (
-    <nav className="bg-white p-2 mb-2 w-full flex justify-between items-center fixed top-0 left-0 z-50">
+    <nav className="bg-white p-2 w-full flex justify-between items-center fixed top-0 left-0 z-50">
       {/* Logo and Home Link */}
       <h1
         style={{ fontFamily: 'Merriweather, serif' }}
         className="text-3xl font-bold text-black cursor-pointer"
-        onClick={() => handleScrollTo('home')}>
+        onClick={() => handleScrollTo('root')}>
         CS
       </h1>
 
       {/* Desktop Menu */}
       <ul className="hidden md:flex items-center space-x-6">
-        <li
-          className={`cursor-pointer ${activeItem === 'donors' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
-          onClick={() => handleNavClick('donors')}>
-          Donors
+
+        <li>
+          <a href="https://www.redcross.org/give-blood.html" target="_blank" rel="noopener noreferrer" className="flex items-center text-black hover:text-blue-500 transition-colors duration-200">
+            Find Donors
+          </a>
         </li>
 
         <li
-          className={`cursor-pointer ${activeItem === 'find-donars' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
-          onClick={() => handleNavClick('find-donars')}>
-          Find Donars
+          className={`cursor-pointer ${activeItem === 'enlightenment' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
+          onClick={() => handleNavClick('enlightenment')}>
+          Enlightenment
         </li>
 
         <li
-          className={`cursor-pointer ${activeItem === 'about-us' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
-          onClick={() => handleNavClick('about-us')}>
-          About Us
-        </li>
-
-        <li
-          className={`cursor-pointer ${activeItem === 'resources' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
-          onClick={() => handleNavClick('resources')}>
-          Resources
+          className={`cursor-pointer ${activeItem === 'graph' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
+          onClick={() => handleNavClick('graph')}>
+          Graph
         </li>
 
         <li
           className={`cursor-pointer ${activeItem === 'contact' ? 'text-red-400' : 'text-black'} hover:text-red-400`}
-          onClick={() => handleNavClick('contact')}>
+          onClick={() => handleNavClick('footer')}>
           Contact
         </li>
-        <li className="flex items-center gap-4">
-          <button
-            onClick={() => alert('Sign In Clicked!')}
-            className="px-4 py-1 bg-gray-400 text-black rounded-b-lg">
-            Sign In
-          </button>
-          <button
-            onClick={() => alert('Register Clicked!')}
-            className="px-4 py-1 bg-black text-white rounded-lg ">
-            Register
-          </button>
-        </li>
+        
       </ul>
       
       {/* Mobile Menu Icon */}
       <div className="md:hidden flex items-center gap-4">
-        <div className='flex items-center gap-4'>
-          <button
-            onClick={() => alert('Sign In Clicked!')}
-            className="px-4 py-1 bg-gray-400 text-black rounded-b-lg">
-            Sign In
-          </button>
-          <button
-            onClick={() => alert('Register Clicked!')}
-            className="px-4 py-1 bg-black text-white rounded-lg ">
-            Register
-          </button>
-        </div>
+        
         <div
           onClick={handleNav}
           className="cursor-pointer text-black hover:text-red-400">
@@ -97,34 +69,30 @@ const Nav = ({ nav, handleNav, handleScrollTo, navRef }) => {
           </div>
         )}
 
-        <ul className="uppercase p-4 text-center">
+        <ul className="uppercase p-4 text-center mt-8">
+
           <li
-            className="p-4 border-b border-black pt-16 hover:text-red-400 cursor-pointer"
-            onClick={() => handleScrollTo('donars')}>
-            Donars
+            className="p-4 border-b border-black">
+            <a href="https://www.redcross.org/give-blood.html" target="_blank" rel="noopener noreferrer" className=" items-center text-black hover:text-blue-500 transition-colors duration-200">
+              Find Donors
+            </a>
           </li>
 
           <li
             className="p-4 border-b border-black hover:text-red-400 cursor-pointer"
-            onClick={() => handleScrollTo('find-donars')}>
-            Find Donars
+            onClick={() => handleScrollTo('enlightenment')}>
+            Enlightenment
           </li>
 
           <li
             className="p-4 border-b border-black hover:text-red-400 cursor-pointer"
-            onClick={() => handleScrollTo('about-us')}>
-            About Us
+            onClick={() => handleScrollTo('graph')}>
+              Graph
           </li>
 
           <li
             className="p-4 border-b border-black hover:text-red-400 cursor-pointer"
-            onClick={() => handleScrollTo('resources')}>
-            Resources
-          </li>
-
-          <li
-            className="p-4 border-b border-black hover:text-red-400 cursor-pointer"
-            onClick={() => handleScrollTo('contact')}>
+            onClick={() => handleScrollTo('footer')}>
             Contact
           </li>
           

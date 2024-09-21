@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import { FaFacebookSquare, FaGithubSquare, FaInstagramSquare, FaLinkedin } from 'react-icons/fa'
-import { FaSquareXTwitter } from 'react-icons/fa6'
+import { FaGithubSquare, FaLinkedin } from 'react-icons/fa'
+import { FaSquareXTwitter, FaPhone } from 'react-icons/fa6'
+import { MdOutlineEmail } from "react-icons/md";
 
 
 const Footer = ({ currentYear, handleScrollTo }) => {
@@ -12,13 +13,16 @@ const Footer = ({ currentYear, handleScrollTo }) => {
           <div>
             <h1 className="text-3xl font-bold">CrimsonSync.</h1>
             <p className="py-4">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Id odit ullam iste repellat consequatur libero reiciendis, blanditiis accusantium.
+              CrimsonSync is a project aimed at revolutionizing the way blood donation drives
+              and blood bank management are handled. Our platform allows users to find available
+              blood types across various hospitals, helping connect donors and recipients more
+              efficiently.
             </p>
             <div className="flex gap-4 my-6">
-              <FaFacebookSquare size={30} />
-              <FaInstagramSquare size={30} />
+              <a href="https://github.com/Khalid-AA/BBP" target="_blank" rel="noopener noreferrer" className="flex items-center text-black hover:text-blue-500 transition-colors duration-200">
+                <FaGithubSquare size={30} />
+              </a>
               <FaSquareXTwitter size={30} />
-              <FaGithubSquare size={30} />
               <FaLinkedin size={30} />
             </div>
           </div>
@@ -45,6 +49,28 @@ const Footer = ({ currentYear, handleScrollTo }) => {
                 <li className="py-1 text-sm">Developer resources</li>
                 <li className="py-1 text-sm">FAQs</li>
                 <li className="py-1 text-sm">Support & Contact</li>
+              </ul>
+            </div>
+            {/* Right Column */}
+            <div>
+              <h6 className="font-medium pb-2">Contact Us</h6>
+              <ul>
+                <li className='flex'>
+                  <a
+                    href="mailto:support@crimsons.com"
+                    className="flex items-center text-black hover:text-blue-500 transition-colors duration-200">
+                    <MdOutlineEmail size={25} className="text-black hover:text-blue-500 transition-colors duration-200" />
+                    <span className="py-1 text-sm ml-2">support@crimsons.com</span>
+                  </a>
+                </li>
+                <li className='flex'>
+                  <a
+                    href="tel:123-456-7890"
+                    className="flex items-center text-black hover:text-blue-500 transition-colors duration-200">
+                    <FaPhone size={20} className="text-black hover:text-blue-500 transition-colors duration-200" />
+                    <span className="py-1 text-sm ml-2">123-456-7890</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

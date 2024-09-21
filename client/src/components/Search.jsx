@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { FaEnvelope, FaGlobe } from 'react-icons/fa';
+import { FaPhone } from "react-icons/fa6";
 
-const GenerateText = () => {
+
+const Search = () => {
     const [hospitalInput, setHospitalInput] = useState('');
     const [bloodGroupInput, setBloodGroupInput] = useState('');
     const [hospitals, setHospitals] = useState([]);
@@ -14,10 +17,11 @@ const GenerateText = () => {
     const [bloodGroupInputFocused, setBloodGroupInputFocused] = useState(false);
     const [hospitalResponse, setHospitalResponse] = useState('');
     const [bloodGroupResponse, setBloodGroupResponse] = useState('');
-    const [donationAmounts, setDonationAmounts] = useState({}); 
 
     const hospitalRef = useRef(null);
     const bloodGroupRef = useRef(null);
+    const hospitalInputRef = useRef(null);
+    const bloodGroupInputRef = useRef(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -26,7 +30,6 @@ const GenerateText = () => {
             const response = await axios.get('http://localhost:8080/api');
             setHospitals(response.data.hospitals);
             setBloodTypes(response.data.blood_types);
-            setDonationAmounts(response.data.donationAmounts); // Store donation amounts
         } catch (err) {
             setError('Failed to fetch data');
             console.error(err);
@@ -40,25 +43,23 @@ const GenerateText = () => {
     }, []);
 
     useEffect(() => {
-        if (hospitalInput) {
-            const filtered = hospitals.filter(hospital =>
-                hospital.toLowerCase().includes(hospitalInput.toLowerCase())
-            );
-            setFilteredHospitals(filtered);
-        } else {
-            setFilteredHospitals(hospitals);
-        }
+        setFilteredHospitals(
+            hospitalInput
+                ? hospitals.filter(hospital =>
+                      hospital.toLowerCase().includes(hospitalInput.toLowerCase())
+                  )
+                : hospitals
+        );
     }, [hospitalInput, hospitals]);
 
     useEffect(() => {
-        if (bloodGroupInput) {
-            const filtered = bloodTypes.filter(bloodType =>
-                bloodType.toLowerCase().includes(bloodGroupInput.toLowerCase())
-            );
-            setFilteredBloodTypes(filtered);
-        } else {
-            setFilteredBloodTypes(bloodTypes);
-        }
+        setFilteredBloodTypes(
+            bloodGroupInput
+                ? bloodTypes.filter(bloodType =>
+                      bloodType.toLowerCase().includes(bloodGroupInput.toLowerCase())
+                  )
+                : bloodTypes
+        );
     }, [bloodGroupInput, bloodTypes]);
 
     useEffect(() => {
@@ -87,20 +88,28 @@ const GenerateText = () => {
 
     const handleHospitalSelect = (hospital) => {
         setHospitalInput(hospital);
-        setHospitalInputFocused(false);
+        setTimeout(() => {
+            setHospitalInputFocused(false);
+        }, 100);
+        hospitalInputRef.current.focus();
+        handleHospitalSubmit(hospital);
     };
 
     const handleBloodGroupSelect = (bloodType) => {
         setBloodGroupInput(bloodType);
-        setBloodGroupInputFocused(false);
+        setTimeout(() => {
+            setBloodGroupInputFocused(false);
+        }, 100);
+        bloodGroupInputRef.current.focus();
+        handleBloodGroupSubmit(bloodType);
     };
 
-    const handleHospitalSubmit = async () => {
-        if (!hospitalInput) return;
+    const handleHospitalSubmit = async (input) => {
+        if (!input) return;
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post('http://localhost:8080/generate', { input: hospitalInput });
+            const response = await axios.post('http://localhost:8080/generate', { input });
             setHospitalResponse(response.data.output || 'No response from server');
         } catch (err) {
             setError('Failed to fetch data');
@@ -110,12 +119,12 @@ const GenerateText = () => {
         }
     };
 
-    const handleBloodGroupSubmit = async () => {
-        if (!bloodGroupInput) return;
+    const handleBloodGroupSubmit = async (input) => {
+        if (!input) return;
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post('http://localhost:8080/generate', { input: bloodGroupInput });
+            const response = await axios.post('http://localhost:8080/generate', { input });
             setBloodGroupResponse(response.data.output.hospitals || 'No response from server');
         } catch (err) {
             setError('Failed to fetch data');
@@ -125,41 +134,36 @@ const GenerateText = () => {
         }
     };
 
+    const handleHospitalKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleHospitalSubmit(hospitalInput);
+        }
+    };
+
+    const handleBloodGroupKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleBloodGroupSubmit(bloodGroupInput);
+        }
+    };
+
     return (
-        <section id="generate-text" className="text-center p-8 text-black relative">
+        <section id="generate-text" className="text-center p-8 text-black relative bg-gray-100 flex flex-col justify-center h-screen">
             <h3 className="text-3xl font-bold mb-4">Search Hospitals and Blood Types</h3>
 
-            {/* Display Donation Amounts */}
-            <div className="mb-4">
-                <h4 className="text-xl font-semibold">Donation Amounts:</h4>
-                <ul className="list-disc list-inside">
-                    {Object.entries(donationAmounts).map(([bloodGroup, amount]) => (
-                        <li key={bloodGroup}>
-                            {bloodGroup} : {amount} ml
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            <div className="mb-4">
-                <div className="relative mb-4 flex items-center justify-center" ref={hospitalRef}>
+            <div className="mb-4 flex flex-col lg:flex-row lg:space-x-4 justify-center">
+                <div className="relative mb-4 flex flex-col w-full lg:w-1/2" ref={hospitalRef}>
                     <input
+                        ref={hospitalInputRef}
                         type="text"
                         value={hospitalInput}
                         onChange={handleHospitalChange}
+                        onKeyDown={handleHospitalKeyDown}
                         onFocus={() => setHospitalInputFocused(true)}
                         placeholder="Search Hospitals"
-                        className="px-4 py-2 border rounded-lg text-white"
+                        className="px-4 py-2 border rounded-lg text-white w-full"
                     />
-                    <button
-                        onClick={handleHospitalSubmit}
-                        className={`ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg ${hospitalInput ? '' : 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!hospitalInput}
-                    >
-                        Search
-                    </button>
                     {hospitalInputFocused && (
-                        <ul className="absolute top-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                        <ul className="mt-10 absolute left-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto" style={{ bottom: 'auto', top: 'auto' }}>
                             {filteredHospitals.length > 0 ? (
                                 filteredHospitals.map((hospital, index) => (
                                     <li
@@ -175,27 +179,40 @@ const GenerateText = () => {
                             )}
                         </ul>
                     )}
-                </div>
-                {hospitalResponse && <p className="mt-1 mb-2 text-green-900 font-semibold">{hospitalResponse}</p>}
 
-                <div className="relative mb-4 flex items-center justify-center" ref={bloodGroupRef}>
+                    {hospitalResponse && (
+                        <div className="mt-2 ml-4 text-black font-semibold text-left">
+                            <p>{hospitalResponse}</p>
+                            <div className="flex space-x-4 mt-2">
+                                <a href={`tel:0123456789`} aria-label="Contact" className="text-black hover:text-blue-500">
+                                    <FaPhone size={20}/>
+                                </a>
+                                <a href={`mailto:example@gmail.com`} aria-label="Email" className="text-black hover:text-blue-500">
+                                    <FaEnvelope size={20}/>
+                                </a>
+                                <a href="https://example.com/" target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-black hover:text-blue-500">
+                                    <FaGlobe size={20}/>
+                                </a>
+                            </div>
+                        </div>
+                    )}
+
+
+
+                </div>
+                <div className="relative mb-4 flex flex-col w-full lg:w-1/2" ref={bloodGroupRef}>
                     <input
+                        ref={bloodGroupInputRef}
                         type="text"
                         value={bloodGroupInput}
                         onChange={handleBloodGroupChange}
+                        onKeyDown={handleBloodGroupKeyDown}
                         onFocus={() => setBloodGroupInputFocused(true)}
-                        placeholder="Search Blood Types"
-                        className="px-4 py-2 border rounded-lg text-white"
+                        placeholder="Search Blood Groups"
+                        className="px-4 py-2 border rounded-lg text-white w-full"
                     />
-                    <button
-                        onClick={handleBloodGroupSubmit}
-                        className={`ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg ${bloodGroupInput ? '' : 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!bloodGroupInput}
-                    >
-                        Search
-                    </button>
                     {bloodGroupInputFocused && (
-                        <ul className="absolute top-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                        <ul className="mt-10 absolute left-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto" style={{ top: 'auto' }}>
                             {filteredBloodTypes.length > 0 ? (
                                 filteredBloodTypes.map((bloodType, index) => (
                                     <li
@@ -211,9 +228,28 @@ const GenerateText = () => {
                             )}
                         </ul>
                     )}
+                    {bloodGroupResponse && (
+                        <div className="mt-2 ml-4 text-black font-semibold text-left max-h-[60vh] overflow-y-auto">
+                            {bloodGroupResponse.split(',').map((hospital, index) => (
+                                <div key={index} className="flex justify-between items-center border-b border-black">
+                                    <p>{hospital.trim()}</p>
+                                    <div className="flex space-x-4 mr-10">
+                                        <a href={`tel:0123456789`} aria-label="Contact" className="text-black hover:text-blue-500">
+                                            <FaPhone />
+                                        </a>
+                                        <a href={`mailto:example@gmail.com`} aria-label="Email" className="text-black hover:text-blue-500">
+                                            <FaEnvelope />
+                                        </a>
+                                        <a href="https://example.com/" target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-black hover:text-blue-500">
+                                            <FaGlobe />
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
-            {bloodGroupResponse && <p className="mt-1 mb-2 text-green-900 font-semibold">{bloodGroupResponse}</p>}
 
             {loading && <p className="mt-4">Loading...</p>}
             {error && <p className="mt-4 text-red-500">{error}</p>}
@@ -221,4 +257,4 @@ const GenerateText = () => {
     );
 };
 
-export default GenerateText;
+export default Search;
